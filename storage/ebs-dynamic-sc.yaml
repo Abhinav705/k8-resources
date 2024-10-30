@@ -1,0 +1,7 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: expense-ebs
+reclaimPolicy: Retain #reclaim policy will keep the vol after cluster deletion as well
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
