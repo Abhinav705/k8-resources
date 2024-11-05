@@ -1,0 +1,25 @@
+#we will run kubectl taint nodes node1 project=expense NoSchedule
+#above command will taint the node with the key-value (project=expense)
+#NoSchedule means no new pods will be scheduled, but existing pods will run
+#NoExecute means no new pods will be scheduled and existing pods will be evicted
+#PreferNoSchedule means try not to schedule but can't guarantee
+#if you want to schedule your pod in tainted node, then you should have toleration and key-value should be specified
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: Always # keep this as always
+  tolerations:
+  - key: "project"
+    operator: "Equal"
+    value: "expense"
+    effect: "NoSchedule"
+  - key: "project"
+    operator: "Exists"
+    effect: "NoSchedule"

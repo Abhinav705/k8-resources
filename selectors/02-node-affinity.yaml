@@ -1,0 +1,30 @@
+#this command will label the node
+#kubectl label nodes <node-name> project=expense
+#even though we give matchExpressions as project=expense, the pod will not schedule in the node-1, because node-1 is tainted
+#because we have mentioned requiredDuringSchedulingIgnoredDuringExecution -> hard, so the pod will be pending state
+#since the node-1 is tained, so we are using tolerations to schedule the pod in tained node
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: project
+            operator: In
+            values:
+            - expense
+  containers:
+  - name: with-node-affinity
+    image: nginx
+  tolerations:
+  - key: "project"
+    operator: "Equal"
+    value: "expense"
+    effect: "NoSchedule"
+  - key: "project"
+    operator: "Exists"
+    effect: "NoSchedule"

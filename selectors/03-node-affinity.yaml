@@ -1,0 +1,23 @@
+#this command will label the node
+#kubectl label nodes <node-name> project=expense
+#even though we give matchExpressions as project=expense, the pod will not schedule in the node-1 since it is tainted
+#because we have mentioned preferredDuringSchedulingIgnoredDuringExecution -> soft, so the pod will be scheduled in
+#some other node
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity-1
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: project
+            operator: In
+            values:
+            - expense
+  containers:
+  - name: with-node-affinity
+    image: nginx
